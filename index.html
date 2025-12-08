@@ -1,0 +1,290 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Personal Money Tracker</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap"
+    rel="stylesheet">
+  <link rel="stylesheet" href="style.css"> 
+</head>
+
+<body>
+  <div id="app">
+    <!-- Top Navigation -->
+    <div class="topbar-shell">
+      <header class="topbar">
+        <div class="brand">
+          <div class="logo">PM</div>
+          <div class="brand-text">
+            <div class="title">Personal Money Tracker</div>
+          </div>
+        </div>
+
+        <div class="topbar-separator"></div>
+
+        <!-- <div class="topbar-actions">
+          <button class="hamburger" id="hamburgerBtn" aria-label="Toggle Menu">
+            ☰
+          </button>
+          <div class="nav-scroll">
+            <div class="nav">
+              <button class="nav-item" data-cat="for-myself">For Myself</button>
+              <button class="nav-item" data-cat="gave-money">I Gave Money</button>
+              <button class="nav-item" data-cat="borrowed">I Borrowed</button>
+              <button class="nav-item" data-cat="donated">I Donated</button>
+              <button class="nav-item" data-cat="invested">I Invested</button>
+            </div>
+          </div>
+
+          <div class="topbar-balance-card">
+            <h4>Total Balance</h4>
+            <div id="userBalance" class="topbar-balance-value">₹0.00</div>
+          </div>
+
+          <button id="addBalanceBtn" class="btn primary funds">
+            <svg class="btn-icon" viewBox="0 0 24 24" fill="none">
+              <path d="M12 5v14M5 12h14" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"
+                stroke-linejoin="round" />
+            </svg>
+            Add Funds
+          </button>
+        </div> -->
+ 
+        <div class="topbar-actions">
+  <!-- ✅ Hamburger Menu Button -->
+  <button class="hamburger" id="hamburgerBtn" aria-label="Toggle Menu">
+    ☰
+  </button>
+
+  <!-- ✅ Nav menu (hidden on small screens) -->
+   <a href="#transactionsWrap"></a>
+  <div class="nav-scroll" id="navMenu">
+    <div class="nav">
+       <a href="#showDashboard"><button class="nav-item" data-cat="for-myself">For Myself</button></a>
+      <a href="#showDashboard"><button class="nav-item" data-cat="gave-money">I Gave Money</button></a>
+       <a href="#showDashboard"><button class="nav-item" data-cat="borrowed">I Borrowed</button></a>
+       <a href="#showDashboard"><button class="nav-item" data-cat="donated">I Donated</button></a>
+       <a href="#showDashboard"><button class="nav-item" data-cat="invested">I Invested</button></a>
+    </div>
+  </div>
+
+  <div class="topbar-balance-card">
+    <h4>Total Balance</h4>
+    <div id="userBalance" class="topbar-balance-value">₹0.00</div>
+  </div>
+
+  <button id="addBalanceBtn" class="btn primary funds">
+    <svg class="btn-icon" viewBox="0 0 24 24" fill="none">
+      <path d="M12 5v14M5 12h14" stroke="currentColor" stroke-width="1.8"
+        stroke-linecap="round" stroke-linejoin="round" />
+    </svg>
+    Add Funds
+  </button>
+</div>
+
+      </header>
+    </div>
+
+    <!-- Main Layout -->
+    <main class="container-main">
+      <section class="grid">
+        <!-- Left pane: Add Transaction -->
+        <aside>
+          <div class="panel">
+            <div class="panel-header">
+              <div>
+                <h2 class="panel-title">Add Transaction</h2>
+              </div>
+
+            </div>
+
+            <div class="segmented">
+              <button id="modeOnline" type="button">
+                <span class="dot"></span>
+                Online Payment
+              </button>
+              <button id="modeCash" class="active" type="button">
+                <span class="dot"></span>
+                Cash Payment
+              </button>
+            </div>
+
+            <form id="txForm">
+              <input type="hidden" id="txType" value="online" />
+
+              <div class="row">
+                <div style="flex: 1">
+                  <label for="amount">Amount</label>
+                  <input id="amount" type="number" step="0.01" placeholder="0.00" required />
+                </div>
+                <div style="width: 150px; visibility: hidden; display: none;">
+                  <label for="modeSelect">Payment Method</label>
+                  <select id="modeSelect">
+                    <option value="cash">Cash</option>
+                    <option value="online">Online Payment</option>
+                  </select>
+                </div>
+              </div>
+
+              <div class="row">
+                <div style="flex: 1">
+                  <label for="toWhom">For Whom</label>
+                  <input id="toWhom" type="text" placeholder="Name or short description" required />
+                </div>
+              </div>
+
+              <div class="row">
+                <div style="flex: 1">
+                  <label for="dateTime">Date &amp; Time</label>
+                  <input id="dateTime" type="datetime-local" required />
+                </div>
+              </div>
+
+              <div class="row">
+                <div style="flex: 1">
+                  <label for="why">Notes</label>
+                  <textarea id="why" placeholder="Reason or a short note..." required></textarea>
+                </div>
+              </div>
+
+              <div class="row">
+                <div style="flex: 1">
+                  <label for="categorySelect">Category</label>
+                  <select id="categorySelect">
+                    <option value="for-myself">For Myself</option>
+                    <option value="gave-money">I Gave Money</option>
+                    <option value="borrowed">I Borrowed</option>
+                    <option value="donated">I Donated</option>
+                    <option value="invested">I Invested</option>
+                  </select>
+                </div>
+              </div>
+
+              <div class="actions">
+                <button type="button" class="btn ghost" id="resetBtn">Clear</button>
+                <button type="submit" class="btn primary">Save Transaction</button>
+              </div>
+            </form>
+          </div>
+        </aside>
+
+        <!-- Right pane: Dashboard -->
+        <section class="dashboard" id="showDashboard">
+          <div class="card-row">
+            <div class="card">
+              <div class="card-inner">
+                <div id="currentCategory" class="big">For Myself</div>
+                <div id="subStats" class="small">
+                  Cash: 0&nbsp;&nbsp;|&nbsp;&nbsp;Online: 0
+                </div>
+
+              </div>
+            </div>
+            <div class="card">
+              <div class="card-inner">
+                <div id="totalAmount" class="big">₹0.00</div>
+
+              </div>
+            </div>
+          </div>
+
+          <!-- Transaction History Panel -->
+          <!-- Transaction History Panel -->
+          <div class="panel transactions-panel">
+            <div class="transactions-header">
+              <div class="transactions-header-left">
+                <h3 class="transactions-title">Transaction History</h3>
+
+              </div>
+
+
+            </div>
+
+            <div class="transactions-grid" id="transactionsWrap">
+              <!-- Cash Column -->
+              <div class="tx-column tx-column--cash">
+                <div class="tx-column-header">
+                  <div class="tx-column-title-wrap">
+                    <div class="tx-column-icon tx-column-icon--cash">
+                      <span>₹</span>
+                    </div>
+                    <div>
+                      <h4 class="tx-column-title">Cash Transactions</h4>
+                    </div>
+                  </div>
+                </div>
+
+                <div id="cashList" class="tx-list">
+
+                </div>
+              </div>
+
+              <!-- Online Column -->
+              <div class="tx-column tx-column--online">
+                <div class="tx-column-header">
+                  <div class="tx-column-title-wrap">
+                    <div class="tx-column-icon tx-column-icon--online">
+                      <span>↗</span>
+                    </div>
+                    <div>
+                      <h4 class="tx-column-title">Online Transactions</h4>
+                    </div>
+                  </div>
+                </div>
+
+                <div id="onlineList" class="tx-list">
+                  
+                  <!-- Example item (for reference) -->
+                  <!--
+        <article class="tx-item tx-enter">
+          <div class="tx-item-main">
+            <div class="tx-item-info">
+              <div class="tx-item-title-row">
+                <h5 class="tx-item-title">Salary Credit</h5>
+                <span class="tx-item-amount tx-item-amount--positive">+₹45,000.00</span>
+              </div>
+              <div class="tx-item-meta-row">
+                <span class="tx-item-datetime">Oct 04 • 9:15 AM</span>
+                <span class="tx-item-category tx-item-category--income">Income</span>
+              </div>
+              <p class="tx-item-notes">
+                Monthly salary deposited to your bank.
+              </p>
+            </div>
+          </div>
+        </article>
+        -->
+
+                </div>
+              </div>
+
+        </section>
+      </section>
+    </main>
+
+    <!-- Toasts -->
+    <div class="toast-wrap" id="toasts"></div>
+  </div>
+
+  <!-- Add Funds Modal -->
+  <div id="balanceModal">
+    <div class="modal-inner">
+      <h3>Add Funds</h3>
+      <p class="modal-sub">Increase your available balance. This does not create a transaction record.</p>
+      <input id="balanceInput" type="number" placeholder="Enter amount"
+        style="width:100%; padding:10px; border-radius:12px; border:1px solid var(--border-subtle); background:#f9fafb;" />
+      <div class="modal-actions">
+        <button id="closeBalance" class="btn ghost">Cancel</button>
+        <button id="saveBalance" class="btn primary">Add Balance</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+
+</html>
