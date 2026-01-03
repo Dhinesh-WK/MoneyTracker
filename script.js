@@ -1,10 +1,10 @@
 /* ===== App Data & Helpers ===== */
 const CATEGORIES = {
-    'for-myself': 'For Myself',
-    'gave-money': 'I gave money',
-    'borrowed': 'I borrowed',
-    'donated': 'I donated',
-    'invested': 'I invested'
+    'for-myself': 'Spend',
+    'gave-money': 'Gave Money',
+    'borrowed': 'Borrowed',
+    'donated': 'Donated',
+    'invested': 'Invested'
 };
 
 const getStore = () => JSON.parse(localStorage.getItem('pm_txs') || '{}');
@@ -279,8 +279,8 @@ function renderTx(tx) {
       </div>
     </div>
     <div class="tx-item-actions">
-      <button class="btn tx-btn-secondary" data-id="${tx.id}" data-type="${tx.type}">Edit</button>
-      <button class="btn tx-btn-danger" data-id="${tx.id}" data-type="${tx.type}">Delete</button>
+      <button class="btn tx-btn-secondary edit-btn" data-id="${tx.id}" data-type="${tx.type}">Edit</button>
+      <button class="btn tx-btn-danger del-btn" data-id="${tx.id}" data-type="${tx.type}">Delete</button>
     </div>
     <div class="tx-divider"></div>
   `;
@@ -299,44 +299,94 @@ function renderTx(tx) {
 
 function escapeHtml(s) { return String(s).replaceAll('<', '&lt;').replaceAll('>', '&gt;'); }
 
-function deleteTx(id, type) {
+function deleteTx(id) {
     if (!confirm('Delete transaction?')) return;
+
     const store = getStore();
     const catData = store[currentCategory] || { cash: [], online: [] };
+
+    let deletedTx = null;
+
+    // find & remove tx from both buckets
     ['cash', 'online'].forEach(bucket => {
-        catData[bucket] = catData[bucket].filter(t => t.id !== id);
+        const idx = catData[bucket].findIndex(t => t.id === id);
+        if (idx !== -1) {
+            deletedTx = catData[bucket][idx];
+            catData[bucket].splice(idx, 1);
+        }
     });
-    store[currentCategory] = catData;
-    setStore(store);
-    renderTransactions();
-    toast({ text: 'Deleted', type: 'error' });
-}
 
-function editTx(id) {
-    const store = getStore();
-    const catData = store[currentCategory] || { cash: [], online: [] };
-    let found = null;
-
-    for (const b of ['cash', 'online']) {
-        const tx = catData[b].find(t => t.id === id);
-        if (tx) { found = tx; break; }
-    }
-
-    if (!found) {
+    if (!deletedTx) {
         toast({ text: 'Transaction not found', type: 'error' });
         return;
     }
 
-    amountEl.value = found.amount;
-    toWhomEl.value = found.toWhom;
-    dateTimeEl.value = found.dateTime;
-    whyEl.value = found.why;
-    categorySelect.value = currentCategory;
-    setMode(found.type);
+    // 🔁 REVERSE balance effect
+    if (deletedTx.category === "borrowed") {
+        totalBalance -= Number(deletedTx.amount);
+    } else {
+        totalBalance += Number(deletedTx.amount);
+    }
 
-    editingTxId = id;
-    toast({ text: 'Edit mode: update and submit', type: 'success' });
+    // persist
+    store[currentCategory] = catData;
+    setStore(store);
+    localStorage.setItem('pm_balance', totalBalance);
+
+    updateBalanceUI();
+    renderTransactions();
+
+    toast({ text: 'Transaction deleted', type: 'error' });
 }
+
+
+function editTx(id) {
+    const store = getStore();
+    const catData = store[currentCategory] || { cash: [], online: [] };
+    let foundTx = null;
+
+    // find & remove transaction
+    ['cash', 'online'].forEach(bucket => {
+        const idx = catData[bucket].findIndex(t => t.id === id);
+        if (idx !== -1) {
+            foundTx = catData[bucket][idx];
+            catData[bucket].splice(idx, 1);
+        }
+    });
+
+    if (!foundTx) {
+        toast({ text: 'Transaction not found', type: 'error' });
+        return;
+    }
+
+    /* 🔁 REVERT BALANCE EFFECT */
+    if (foundTx.category === "borrowed") {
+        totalBalance -= Number(foundTx.amount);
+    } else {
+        totalBalance += Number(foundTx.amount);
+    }
+
+    // persist changes
+    store[currentCategory] = catData;
+    setStore(store);
+    localStorage.setItem('pm_balance', totalBalance);
+    updateBalanceUI();
+    renderTransactions();
+
+    /* 📝 LOAD FORM VALUES */
+    amountEl.value = foundTx.amount;
+    toWhomEl.value = foundTx.toWhom;
+    dateTimeEl.value = foundTx.dateTime;
+    whyEl.value = foundTx.why;
+    categorySelect.value = foundTx.category;
+    setMode(foundTx.type);
+
+    // IMPORTANT: treat as NEW transaction
+    editingTxId = null;
+
+    toast({ text: 'Edit mode: update & save', type: 'success' });
+}
+
 
 /* ===== Utility: renderAll (debug) ===== */
 function renderAll() { console.log('ALL DATA:', getStore()); }
@@ -371,5 +421,7 @@ document.addEventListener("DOMContentLoaded", () => {
         });
     }
 });
+
+
 
 
