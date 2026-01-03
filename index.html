@@ -64,11 +64,11 @@
    <a href="#transactionsWrap"></a>
   <div class="nav-scroll" id="navMenu">
     <div class="nav">
-       <a href="#showDashboard"><button class="nav-item" data-cat="for-myself">For Myself</button></a>
-      <a href="#showDashboard"><button class="nav-item" data-cat="gave-money">I Gave Money</button></a>
-       <a href="#showDashboard"><button class="nav-item" data-cat="borrowed">I Borrowed</button></a>
-       <a href="#showDashboard"><button class="nav-item" data-cat="donated">I Donated</button></a>
-       <a href="#showDashboard"><button class="nav-item" data-cat="invested">I Invested</button></a>
+       <a href="#showDashboard"><button class="nav-item" data-cat="for-myself">Spend</button></a>
+      <a href="#showDashboard"><button class="nav-item" data-cat="gave-money">Gave Money</button></a>
+       <a href="#showDashboard"><button class="nav-item" data-cat="borrowed">Borrowed</button></a>
+       <a href="#showDashboard"><button class="nav-item" data-cat="donated">Donated</button></a>
+       <a href="#showDashboard"><button class="nav-item" data-cat="invested">Invested</button></a>
     </div>
   </div>
 
@@ -103,11 +103,11 @@
             </div>
 
             <div class="segmented">
-              <button id="modeOnline" type="button">
+              <button id="modeOnline" class="active" type="button">
                 <span class="dot"></span>
                 Online Payment
               </button>
-              <button id="modeCash" class="active" type="button">
+              <button id="modeCash" type="button">
                 <span class="dot"></span>
                 Cash Payment
               </button>
@@ -155,11 +155,11 @@
                 <div style="flex: 1">
                   <label for="categorySelect">Category</label>
                   <select id="categorySelect">
-                    <option value="for-myself">For Myself</option>
-                    <option value="gave-money">I Gave Money</option>
-                    <option value="borrowed">I Borrowed</option>
-                    <option value="donated">I Donated</option>
-                    <option value="invested">I Invested</option>
+                    <option value="for-myself"> Spend</option>
+                    <option value="gave-money">Gave Money</option>
+                    <option value="borrowed">Borrowed</option>
+                    <option value="donated">Donated</option>
+                    <option value="invested">Invested</option>
                   </select>
                 </div>
               </div>
@@ -174,23 +174,19 @@
 
         <!-- Right pane: Dashboard -->
         <section class="dashboard" id="showDashboard">
-          <div class="card-row">
-            <div class="card">
-              <div class="card-inner">
-                <div id="currentCategory" class="big">For Myself</div>
-                <div id="subStats" class="small">
-                  Cash: 0&nbsp;&nbsp;|&nbsp;&nbsp;Online: 0
-                </div>
+          <div class="card">
+  <div class="card-inner category-amount-row">
+    <div>
+      <div id="currentCategory" class="big">Spend</div>
+      <div id="subStats" class="small">
+        Cash: 0 | Online: 0
+      </div>
+    </div>
 
-              </div>
-            </div>
-            <div class="card">
-              <div class="card-inner">
-                <div id="totalAmount" class="big">₹0.00</div>
+    <div id="totalAmount" class="big amount-right">₹0.00</div>
+  </div>
+</div>
 
-              </div>
-            </div>
-          </div>
 
           <!-- Transaction History Panel -->
           <!-- Transaction History Panel -->
@@ -274,7 +270,7 @@
   <div id="balanceModal">
     <div class="modal-inner">
       <h3>Add Funds</h3>
-      <p class="modal-sub">Increase your available balance. This does not create a transaction record.</p>
+      
       <input id="balanceInput" type="number" placeholder="Enter amount"
         style="width:100%; padding:10px; border-radius:12px; border:1px solid var(--border-subtle); background:#f9fafb;" />
       <div class="modal-actions">
